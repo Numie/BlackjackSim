@@ -9,7 +9,7 @@ describe Card do
 
   describe '::suits' do
     it 'includes all of the suits' do
-      expect(Card.suits).to eq([:ace, :diamonds, :spades, :clubs])
+      expect(Card.suits).to eq([:hearts, :diamonds, :spades, :clubs])
     end
   end
 
@@ -21,8 +21,8 @@ describe Card do
 
   describe '#initialize' do
     it 'has a rank and a suit' do
-      expect(ace.instance_variables).to include(:rank)
-      expect(ace.instance_variables).to include(:suit)
+      expect(ace.instance_variables).to include(:@rank)
+      expect(ace.instance_variables).to include(:@suit)
     end
   end
 
