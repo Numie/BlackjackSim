@@ -5,7 +5,7 @@ describe Shoe do
   let(:shoe) { Shoe.new }
 
   describe '::create_shoe' do
-    before(:each) { new_shoe = Shoe.create_shoe }
+    let(:new_shoe) { Shoe.create_shoe }
     it 'creates an eight deck shoe' do
       expect(new_shoe.length).to eq(416)
     end
@@ -24,21 +24,22 @@ describe Shoe do
   end
 
   describe '#initialize' do
-    before(:each) { cards = shoe.instance_variable_get(:@cards) }
+    let(:cards) { shoe.instance_variable_get(:@cards) }
     it 'has an array of cards' do
       expect(cards).to be_an(Array)
     end
     it 'has the correct number of cards' do
-      expect(cards.lenght).to eq(416)
+      expect(cards.length).to eq(416)
     end
   end
 
   describe '#draw_card' do
-    before(:each) { card = shoe.draw_card }
     it 'removes a card from the shoe' do
+      card = shoe.draw_card
       expect(shoe.instance_variable_get(:@cards).length).to eq(415)
     end
     it 'returns the drawn card' do
+      card = shoe.draw_card
       expect(card).to be_a(Card)
     end
   end
