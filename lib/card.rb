@@ -22,6 +22,8 @@ class Card
     two: 2
   }
 
+  attr_reader :rank
+
   def self.suits
     SUITS
   end
@@ -35,11 +37,10 @@ class Card
   end
 
   def to_s
-    "#{self.instance_variable_get(:@rank)} of #{self.instance_variable_get(:@suit)}"
+    "#{self.rank} of #{self.instance_variable_get(:@suit)}"
   end
 
   def value
-    rank = self.instance_variable_get(:@rank)
-    RANKS[rank]
+    RANKS[self.rank]
   end
 end
