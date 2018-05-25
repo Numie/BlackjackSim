@@ -17,21 +17,6 @@ describe Hand do
     it 'does not have a bet' do
       expect(hand.instance_variable_get(:@bet)).to eq(nil)
     end
-    it 'does not have an Ace as 11' do
-      expect(hand.instance_variable_get(:@ace_as_11)).to eq(false)
-    end
-    it 'is not hard' do
-      expect(hand.instance_variable_get(:@hard)).to eq(false)
-    end
-    it 'is not busted' do
-      expect(hand.instance_variable_get(:@busted)).to eq(false)
-    end
-    it 'is not doubled' do
-      expect(hand.instance_variable_get(:@doubled)).to eq(false)
-    end
-    it 'is not blackjack' do
-      expect(hand.instance_variable_get(:@blackjack)).to eq(false)
-    end
   end
 
   describe '#blackjack?' do
@@ -65,6 +50,27 @@ describe Hand do
         hand.instance_variable_set(:@value, 22)
         expect(hand.busted?).to eq(true)
       end
+    end
+  end
+
+  describe '#receive_card' do
+    before(:each) do
+      allow(shoe).to receive(:draw_card).and_return(card)
+      allow(card).to receive(:rank).and_return(:ace)
+    end
+    it 'is private' do
+      expect{ hand.receive_card(shoe) }.to raise_error
+    end
+    it 'adds the card to a Hand\'s cards' do
+      hand.send(:receive_card, shoe)
+      expect(hand.instance_variable_get(:@cards)).to include(card)
+    end
+    it 'adds the card\'s value to a Hand\'s value' do
+      expect(hand).to receive(:add_card_to_value)
+      hand.send(:receive_card, shoe)
+    end
+    it 'returns the received card' do
+      expect(hand.send(:receive_card, shoe)).to eq(card)
     end
   end
 
@@ -112,6 +118,7 @@ describe Hand do
       before(:each) do
         hand.instance_variable_set(:@ace_as_11, true)
         hand.instance_variable_set(:@hard, false)
+        allow(card).to receive(:rank).and_return(:eight)
         allow(card).to receive(:value).and_return(8)
       end
       context 'when a Hand would bust' do
@@ -139,24 +146,6 @@ describe Hand do
           expect(hand.instance_variable_get(:@hard)).to eq(false)
         end
       end
-    end
-  end
-
-  describe '#receive_card' do
-    before(:each) { allow(shoe).to receive(:draw_card).and_return(card) }
-    it 'is private' do
-      expect{ hand.receive_card(shoe) }.to raise_error
-    end
-    it 'adds the card to a Hand\'s cards' do
-      hand.send(:receive_card, shoe)
-      expect(hand.instance_variable_get(:@cards)).to include(card)
-    end
-    it 'adds the card\'s calue ti a Hand\'s value' do
-      expect(hand).to receive(:add_card_to_value)
-      hand.send(:receive_card, shoe)
-    end
-    it 'returns the received card' do
-      expect(hand.send(:receive_card, shoe)).to eq(card)
     end
   end
 end

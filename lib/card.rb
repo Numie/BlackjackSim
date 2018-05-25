@@ -41,6 +41,6 @@ class Card
   end
 
   def value
-    RANKS[self.rank]
+    RANKS[@rank]
   end
 end

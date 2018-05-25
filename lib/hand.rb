@@ -6,11 +6,18 @@ class Hand
     @cards = []
     @value = 0
     @bet = nil
-    @ace_as_11 = false
-    @hard = false
-    @busted = false
-    @doubled = false
-    @blackjack = false
+  end
+
+  def hit(shoe)
+
+  end
+
+  def double_down(show)
+    @doubled = true
+  end
+
+  def split
+
   end
 
   def blackjack?
@@ -23,11 +30,28 @@ class Hand
 
   private
 
-  def add_card_to_value(card)
-
+  def receive_card(shoe)
+    card = shoe.draw_card
+    @cards << card
+    add_card_to_value(card)
+    card
   end
 
-  def receive_card(shoe)
+  def add_card_to_value(card)
+    if card.rank == :ace
+      if @value >= 11
+        @value += 1
+      else
+        @ace_as_11 = true
+        @value += 11
+      end
+    else
+      @value += card.value
+    end
 
+    if @value > 21 && (@ace_as_11 && !@hard)
+      @hard = true
+      @value -= 10
+    end
   end
 end
