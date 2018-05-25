@@ -19,6 +19,46 @@ describe Hand do
     end
   end
 
+  describe '#hit' do
+    it 'receives a card' do
+      expect(hand).to receive(:receive_card)
+      hand.hit(shoe)
+    end
+    it 'returns the received card' do
+      expect(hand.hit(shoe)).to be_a(Card)
+    end
+  end
+
+  describe '#double_down' do
+    it 'registers a Hand as doubled down' do
+      hand.double_down(shoe)
+      expect(hand.instance_variable_get(:@doubled)).to eq(true)
+    end
+    it 'receives a card' do
+      expect(hand).to receive(:receive_card)
+      hand.hit(shoe)
+    end
+    it 'returns the received card' do
+      expect(hand.hit(shoe)).to be_a(Card)
+    end
+  end
+
+  describe '#split' do
+    it 'returns a Array' do
+      expect(hand.split).to be_a(Array)
+    end
+    it 'splits a Hand into two hands' do
+      expect(hand.split.count { |el| el.is_a?(Hand) }).to eq(2)
+    end
+    it 'gives each Hand one card' do
+      expect(hand.split.all { |hand| hand.instance_variable_get(:@cards).length == 1 }).to eq(true)
+    end
+    it 'gives each Hand a bet equal to the original Hand\'s bet' do
+      hand.bet = 50
+      expect(hand.split.all { |hand| hand.bet == 50 }).to eq(true)
+    end
+  end
+
   describe '#blackjack?' do
     context 'when a hand is blackjack' do
       it 'returns true' do
@@ -49,6 +89,21 @@ describe Hand do
       it 'returns true' do
         hand.instance_variable_set(:@value, 22)
         expect(hand.busted?).to eq(true)
+      end
+    end
+  end
+
+  describe '#doubled?' do
+    context 'when a hand is not doubled' do
+      it 'returns false' do
+        expect(hand.doubled?).to eq(false)
+      end
+    end
+
+    context 'when a hand is doubled' do
+      it 'returns true' do
+        hand.instance_variable_set(:@doubled, true)
+        expect(hand.doubled?).to eq(true)
       end
     end
   end

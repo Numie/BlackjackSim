@@ -17,7 +17,7 @@ class Hand
   end
 
   def split
-
+    
   end
 
   def blackjack?
@@ -26,6 +26,10 @@ class Hand
 
   def busted?
     @busted ||= (@value > 21)
+  end
+
+  def doubled?
+    @doubled == true
   end
 
   private
