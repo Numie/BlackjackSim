@@ -1,5 +1,5 @@
 class Hand
-  attr_reader :value
+  attr_reader :cards, :value
   attr_accessor :bet
 
   def initialize
@@ -9,15 +9,30 @@ class Hand
   end
 
   def hit(shoe)
-
+    receive_card(shoe)
   end
 
-  def double_down(show)
+  def double_down(shoe)
     @doubled = true
+    receive_card(shoe)
   end
 
   def split
-    
+    hand1 = Hand.new
+    hand2 = Hand.new
+
+    card1 = @cards[0]
+    card2 = @cards[1]
+
+    hand1.cards << card1
+    hand1.send(:add_card_to_value, card1)
+    hand1.bet = @bet
+
+    hand2.cards << card2
+    hand2.send(:add_card_to_value, card2)
+    hand2.bet = @bet
+
+    return [hand1, hand2]
   end
 
   def blackjack?

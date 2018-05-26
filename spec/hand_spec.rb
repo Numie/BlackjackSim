@@ -20,16 +20,24 @@ describe Hand do
   end
 
   describe '#hit' do
+    before(:each) do
+      allow(shoe).to receive(:draw_card).and_return(card)
+      allow(card).to receive(:rank).and_return(:ace)
+    end
     it 'receives a card' do
       expect(hand).to receive(:receive_card)
       hand.hit(shoe)
     end
     it 'returns the received card' do
-      expect(hand.hit(shoe)).to be_a(Card)
+      expect(hand.hit(shoe)).to respond_to(:rank)
     end
   end
 
   describe '#double_down' do
+    before(:each) do
+      allow(shoe).to receive(:draw_card).and_return(card)
+      allow(card).to receive(:rank).and_return(:ace)
+    end
     it 'registers a Hand as doubled down' do
       hand.double_down(shoe)
       expect(hand.instance_variable_get(:@doubled)).to eq(true)
@@ -39,11 +47,15 @@ describe Hand do
       hand.hit(shoe)
     end
     it 'returns the received card' do
-      expect(hand.hit(shoe)).to be_a(Card)
+      expect(hand.hit(shoe)).to respond_to(:rank)
     end
   end
 
   describe '#split' do
+    before(:each) do
+      hand.instance_variable_set(:@cards, [card, card])
+      allow(card).to receive(:rank).and_return(:ace)
+    end
     it 'returns a Array' do
       expect(hand.split).to be_a(Array)
     end
@@ -51,11 +63,11 @@ describe Hand do
       expect(hand.split.count { |el| el.is_a?(Hand) }).to eq(2)
     end
     it 'gives each Hand one card' do
-      expect(hand.split.all { |hand| hand.instance_variable_get(:@cards).length == 1 }).to eq(true)
+      expect(hand.split.all? { |hand| hand.instance_variable_get(:@cards).length == 1 }).to eq(true)
     end
     it 'gives each Hand a bet equal to the original Hand\'s bet' do
       hand.bet = 50
-      expect(hand.split.all { |hand| hand.bet == 50 }).to eq(true)
+      expect(hand.split.all? { |hand| hand.bet == 50 }).to eq(true)
     end
   end
 
@@ -141,18 +153,18 @@ describe Hand do
           hand.send(:add_card_to_value, card)
           expect(hand.value).to eq(12)
         end
+      end
 
-        context 'when a Hand has a value less than 11' do
-          before(:each) do
-            hand.instance_variable_set(:@value, 10)
-            hand.send(:add_card_to_value, card)
-          end
-          it 'adds 11 to the value' do
-            expect(hand.value).to eq(21)
-          end
-          it 'registers an Ace being used as 11' do
-            expect(hand.instance_variable_get(:@ace_as_11)).to eq(true)
-          end
+      context 'when a Hand has a value less than 11' do
+        before(:each) do
+          hand.instance_variable_set(:@value, 10)
+          hand.send(:add_card_to_value, card)
+        end
+        it 'adds 11 to the value' do
+          expect(hand.value).to eq(21)
+        end
+        it 'registers an Ace being used as 11' do
+          expect(hand.instance_variable_get(:@ace_as_11)).to eq(true)
         end
       end
     end
