@@ -103,9 +103,33 @@ describe Player do
     end
   end
 
+  describe '#split' do
+    let(:first_hand) { double('hand') }
+    let(:last_hand) { double('hand') }
+    let(:hand1) { double('hand') }
+    let(:hand2) { double('hand') }
+    before(:each) do
+      player.instance_variable_set(:@hands, [first_hand, hand, last_hand])
+      player.instance_variable_set(:@current_hand_index, 1)
+      player.instance_variable_set(:@current_hand, hand)
+      allow(hand).to receive(:split).and_return([hand1, hand2])
+      allow(hand1).to receive(:hit)
+      allow(hand1).to receive(:busted?)
+      allow(hand1).to receive(:doubled?)
+    end
+    it 'splits the current hand' do
+      player.split(shoe)
+      expect(player.instance_variable_get(:@hands)).to eq([first_hand, hand1, hand2, last_hand])
+    end
+    it 'hits the first split hand' do
+      expect(hand1).to receive(:hit)
+      player.split(shoe)
+    end
+  end
+
   describe '#check_hand_status' do
     it 'is private' do
-      expect{ player.check_hand_status }.to raise_error
+      expect{ player.check_hand_status(shoe) }.to raise_error
     end
 
     context 'when a hand is busted' do
@@ -118,7 +142,7 @@ describe Player do
       end
       it 'moves to the next hand' do
         expect(player).to receive(:next_hand)
-        player.send(:check_hand_status)
+        player.send(:check_hand_status, shoe)
       end
     end
 
@@ -130,7 +154,7 @@ describe Player do
       end
       it 'moves to the next hand' do
         expect(player).to receive(:next_hand)
-        player.send(:check_hand_status)
+        player.send(:check_hand_status, shoe)
       end
     end
 

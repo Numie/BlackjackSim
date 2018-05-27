@@ -23,7 +23,7 @@ class Player
 
   def hit(shoe)
     @current_hand.hit(shoe)
-    check_hand_status
+    check_hand_status(shoe)
   end
 
   def stand(shoe)
@@ -33,17 +33,25 @@ class Player
   def double_down(shoe)
     @bankroll -= @current_hand.bet
     @current_hand.double_down(shoe)
-    check_hand_status
+    check_hand_status(shoe)
+  end
+
+  def split(shoe)
+    @hands.delete_at(@current_hand_index)
+    new_hands = @current_hand.split(shoe)
+    @hands.insert(@current_hand_index, *new_hands)
+    @current_hand = @hands[@current_hand_index]
+    self.hit(shoe)
   end
 
   private
 
-  def check_hand_status
+  def check_hand_status(shoe)
     if @current_hand.busted?
       @dealer.bankroll += @current_hand.bet
-      next_hand
+      next_hand(shoe)
     elsif @current_hand.doubled?
-      next_hand
+      next_hand(shoe)
     end
   end
 
