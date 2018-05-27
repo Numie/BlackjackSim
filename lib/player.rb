@@ -30,6 +30,12 @@ class Player
     next_hand(shoe)
   end
 
+  def double_down(shoe)
+    @bankroll -= @current_hand.bet
+    @current_hand.double_down(shoe)
+    check_hand_status
+  end
+
   private
 
   def check_hand_status

@@ -81,6 +81,28 @@ describe Player do
     end
   end
 
+  describe '#double_down' do
+    before(:each) do
+      player.instance_variable_set(:@current_hand, hand)
+      allow(hand).to receive(:bet).and_return(50)
+      allow(hand).to receive(:double_down)
+      allow(hand).to receive(:busted?).and_return(false)
+      allow(hand).to receive(:doubled?).and_return(false)
+    end
+    it 'reduces a Player\'s bankroll by a hand\'s bet amount' do
+      player.double_down(shoe)
+      expect(player.bankroll).to eq(-50)
+    end
+    it 'doubles down the current hand' do
+      expect(hand).to receive(:double_down)
+      player.double_down(shoe)
+    end
+    it 'checks the hand\'s status' do
+      expect(player).to receive(:check_hand_status)
+      player.double_down(shoe)
+    end
+  end
+
   describe '#check_hand_status' do
     it 'is private' do
       expect{ player.check_hand_status }.to raise_error

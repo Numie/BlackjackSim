@@ -14,6 +14,7 @@ class Hand
 
   def double_down(shoe)
     @doubled = true
+    @bet *= 2
     receive_card(shoe)
   end
 

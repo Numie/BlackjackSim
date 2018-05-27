@@ -37,10 +37,15 @@ describe Hand do
     before(:each) do
       allow(shoe).to receive(:draw_card).and_return(card)
       allow(card).to receive(:rank).and_return(:ace)
+      hand.bet = 50
     end
     it 'registers a Hand as doubled down' do
       hand.double_down(shoe)
       expect(hand.instance_variable_get(:@doubled)).to eq(true)
+    end
+    it 'doubles a Hand\'s bet' do
+      hand.double_down(shoe)
+      expect(hand.bet).to eq(100)
     end
     it 'receives a card' do
       expect(hand).to receive(:receive_card)
