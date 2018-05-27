@@ -2,11 +2,15 @@ require 'rspec'
 require 'player'
 
 describe Player do
-  let(:player) { Player.new }
+  let(:dealer) { double('dealer') }
+  let(:player) { Player.new(dealer) }
   let(:hand) { double('hand') }
 
   describe '#initialize' do
-    it 'initializes the bankroll do 0' do
+    it 'sets the dealer' do
+      expect(player.instance_variable_get(:@dealer)).to eq(dealer)
+    end
+    it 'initializes the bankroll to 0' do
       expect(player.bankroll).to eq(0)
     end
     it 'initializes hands to an array' do
@@ -50,5 +54,56 @@ describe Player do
         expect(player.bankroll).to eq(50)
       end
     end
+  end
+
+
+
+  describe '#check_hand_status' do
+    it 'is private' do
+      expect{ player.check_hand_status }.to raise_error
+    end
+
+    context 'when a hand is busted' do
+      before(:each) do
+        player.instance_variable_set(:@current_hand, hand)
+        allow(hand).to receive(:busted?).and_return(true)
+        allow(hand).to receive(:bet).and_return(0)
+        allow(dealer).to receive(:bankroll).and_return(0)
+        allow(dealer).to receive(:bankroll=)
+      end
+      it 'moves to the next hand' do
+        expect(player).to receive(:next_hand)
+        player.send(:check_hand_status)
+      end
+    end
+
+    context 'when a hand is doubled' do
+      before do
+        player.instance_variable_set(:@current_hand, hand)
+        allow(hand).to receive(:busted?).and_return(false)
+        allow(hand).to receive(:doubled?).and_return(true)
+      end
+      it 'moves to the next hand' do
+        expect(player).to receive(:next_hand)
+        player.send(:check_hand_status)
+      end
+    end
+
+    context 'when a hand is neither busted nor doubled' do
+      before do
+        player.instance_variable_set(:@current_hand, hand)
+        allow(hand).to receive(:busted?).and_return(false)
+        allow(hand).to receive(:doubled?).and_return(false)
+      end
+      it 'continues with the current hand'
+    end
+  end
+
+  describe '#next_hand' do
+    it 'is private' do
+      expect{ player.next_hand }.to raise_error
+    end
+
+    
   end
 end
