@@ -29,15 +29,19 @@ class Player
       next_hand
     elsif @current_hand.doubled?
       next_hand
-    else
     end
   end
 
-  def next_hand
+  def next_hand(shoe)
     @current_hand_index += 1
     @current_hand = @hands[@current_hand_index]
+    return if @current_hand.nil?
+    # perform basic strategy action
 
-    
+    if @current_hand.cards.length == 1
+      @current_hand.send(:receive_card, shoe)
+      next_hand if @current_hand.blackjack?
+    end
   end
 
   def end_turn

@@ -5,6 +5,7 @@ describe Player do
   let(:dealer) { double('dealer') }
   let(:player) { Player.new(dealer) }
   let(:hand) { double('hand') }
+  let(:shoe) { double('shoe') }
 
   describe '#initialize' do
     it 'sets the dealer' do
@@ -100,10 +101,26 @@ describe Player do
   end
 
   describe '#next_hand' do
+    let(:next_hand) { double('hand') }
+    let(:card1) { double('card') }
+    let(:card2) { double('card') }
     it 'is private' do
       expect{ player.next_hand }.to raise_error
     end
-
-    
+    it 'moves to the next hand' do
+      player.instance_variable_set(:@hands, [hand, next_hand])
+      player.instance_variable_set(:@current_hand_index, 0)
+      allow(next_hand).to receive(:cards).and_return([card1, card2])
+      player.send(:next_hand, shoe)
+      expect(player.current_hand).to eq(next_hand)
+    end
+    it 'deals a card if a hand was split' do
+      player.instance_variable_set(:@hands, [hand, next_hand])
+      player.instance_variable_set(:@current_hand_index, 0)
+      allow(next_hand).to receive(:cards).and_return([card1])
+      allow(next_hand).to receive(:blackjack?).and_return(false)
+      expect(next_hand).to receive(:receive_card)
+      player.send(:next_hand, shoe)
+    end
   end
 end
