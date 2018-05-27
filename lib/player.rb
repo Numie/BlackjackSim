@@ -21,6 +21,15 @@ class Player
     @bankroll += (hand.blackjack? ? hand.bet * 1.5 : hand.bet)
   end
 
+  def hit(shoe)
+    @current_hand.hit(shoe)
+    check_hand_status
+  end
+
+  def stand(shoe)
+    next_hand(shoe)
+  end
+
   private
 
   def check_hand_status

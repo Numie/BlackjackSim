@@ -57,7 +57,29 @@ describe Player do
     end
   end
 
+  describe '#hit' do
+    before(:each) do
+      player.instance_variable_set(:@current_hand, hand)
+      allow(hand).to receive(:hit)
+      allow(hand).to receive(:busted?).and_return(false)
+      allow(hand).to receive(:doubled?).and_return(false)
+    end
+    it 'hits the current hand' do
+      expect(hand).to receive(:hit)
+      player.hit(shoe)
+    end
+    it 'checks the hand\'s status' do
+      expect(player).to receive(:check_hand_status)
+      player.hit(shoe)
+    end
+  end
 
+  describe '#stand' do
+    it 'moves to the next hand' do
+      expect(player).to receive(:next_hand)
+      player.stand(shoe)
+    end
+  end
 
   describe '#check_hand_status' do
     it 'is private' do
