@@ -13,6 +13,25 @@ describe Dealer do
     end
   end
 
+  describe '#play_hand' do
+    before(:each) do
+      allow(hand).to receive(:hit)
+      allow(shoe).to receive(:draw_card).and_return(card)
+      allow(card).to receive(:rank).and_return(:ace)
+      dealer.instance_variable_set(:@hand, hand)
+    end
+    it 'hits up to 16' do
+      allow(hand).to receive(:value).and_return(16)
+      expect(hand).to receive(:hit)
+      dealer.play_hand(shoe)
+    end
+    it 'stays on 17' do
+      allow(hand).to receive(:value).and_return(17)
+      expect(hand).to_not receive(:hit)
+      dealer.play_hand(shoe)
+    end
+  end
+
   describe '#hit' do
     it 'hits the Dealer\'s hand' do
       dealer.instance_variable_set(:@hand, hand)
