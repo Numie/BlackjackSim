@@ -9,13 +9,13 @@ describe Hand do
 
   describe '#initialize' do
     it 'initializes cards to an empty array' do
-      expect(hand.instance_variable_get(:@cards)).to eq([])
+      expect(hand.cards).to eq([])
     end
     it 'has a value of 0' do
-      expect(hand.instance_variable_get(:@value)).to eq(0)
+      expect(hand.value).to eq(0)
     end
     it 'does not have a bet' do
-      expect(hand.instance_variable_get(:@bet)).to eq(nil)
+      expect(hand.bet).to eq(nil)
     end
   end
 
@@ -41,7 +41,7 @@ describe Hand do
     end
     it 'registers a Hand as doubled down' do
       hand.double_down(shoe)
-      expect(hand.instance_variable_get(:@doubled)).to eq(true)
+      expect(hand.doubled).to eq(true)
     end
     it 'doubles a Hand\'s bet' do
       hand.double_down(shoe)
@@ -68,7 +68,7 @@ describe Hand do
       expect(hand.split.count { |el| el.is_a?(Hand) }).to eq(2)
     end
     it 'gives each Hand one card' do
-      expect(hand.split.all? { |hand| hand.instance_variable_get(:@cards).length == 1 }).to eq(true)
+      expect(hand.split.all? { |hand| hand.cards.length == 1 }).to eq(true)
     end
     it 'gives each Hand a bet equal to the original Hand\'s bet' do
       hand.bet = 50
@@ -80,7 +80,7 @@ describe Hand do
     context 'when a hand is blackjack' do
       it 'returns true' do
         hand.instance_variable_set(:@cards, [card, card])
-        hand.instance_variable_set(:@value, 21)
+        hand.value = 21
         expect(hand.blackjack?).to eq(true)
       end
     end
@@ -88,7 +88,7 @@ describe Hand do
     context 'when a hand is not blackjack but has a value of 21' do
       it 'returns false' do
         hand.instance_variable_set(:@cards, [card, card, card])
-        hand.instance_variable_set(:@value, 21)
+        hand.value = 21
         expect(hand.blackjack?).to eq(false)
       end
     end
@@ -97,14 +97,14 @@ describe Hand do
   describe '#busted?' do
     context 'when a hand is not busted' do
       it 'returns false' do
-        hand.instance_variable_set(:@value, 21)
+        hand.value = 21
         expect(hand.busted?).to eq(false)
       end
     end
 
     context 'when a hand is busted' do
       it 'returns true' do
-        hand.instance_variable_set(:@value, 22)
+        hand.value = 22
         expect(hand.busted?).to eq(true)
       end
     end
@@ -135,7 +135,7 @@ describe Hand do
     end
     it 'adds the card to a Hand\'s cards' do
       hand.send(:receive_card, shoe)
-      expect(hand.instance_variable_get(:@cards)).to include(card)
+      expect(hand.cards).to include(card)
     end
     it 'adds the card\'s value to a Hand\'s value' do
       expect(hand).to receive(:add_card_to_value)
@@ -154,7 +154,7 @@ describe Hand do
       before(:each) { allow(card).to receive(:rank).and_return(:ace) }
       context 'when a Hand has a value greater than or equal to 11' do
         it 'adds 1 to the value' do
-          hand.instance_variable_set(:@value, 11)
+          hand.value = 11
           hand.send(:add_card_to_value, card)
           expect(hand.value).to eq(12)
         end
@@ -162,7 +162,7 @@ describe Hand do
 
       context 'when a Hand has a value less than 11' do
         before(:each) do
-          hand.instance_variable_set(:@value, 10)
+          hand.value = 10
           hand.send(:add_card_to_value, card)
         end
         it 'adds 11 to the value' do
@@ -180,7 +180,7 @@ describe Hand do
         allow(card).to receive(:value).and_return(10)
       end
       it 'adds the card\'s value to the value' do
-        hand.instance_variable_set(:@value, 10)
+        hand.value = 10
         hand.send(:add_card_to_value, card)
         expect(hand.value).to eq(20)
       end
@@ -195,7 +195,7 @@ describe Hand do
       end
       context 'when a Hand would bust' do
         before(:each) do
-          hand.instance_variable_set(:@value, 20)
+          hand.value = 20
           hand.send(:add_card_to_value, card)
         end
         it 'deducts 10 from the value' do
@@ -208,7 +208,7 @@ describe Hand do
 
       context 'when a Hand would not bust' do
         before(:each) do
-          hand.instance_variable_set(:@value, 6)
+          hand.value = 6
           hand.send(:add_card_to_value, card)
         end
         it 'adds the card\'s value as normal' do
