@@ -5,7 +5,6 @@ describe Dealer do
   let(:dealer) { Dealer.new }
   let(:hand) { double('hand') }
   let(:shoe) { double('shoe') }
-  let(:card) { double('card') }
 
   describe '#initialize' do
     it 'has a hand' do
