@@ -10,10 +10,10 @@ describe Shoe do
       expect(new_shoe.length).to eq(416)
     end
     it 'has the correct number of each suit' do
-      expect(new_shoe.count { |card| card.instance_variable_get(:@suit) == :hearts }).to eq(104)
-      expect(new_shoe.count { |card| card.instance_variable_get(:@suit) == :diamonds }).to eq(104)
-      expect(new_shoe.count { |card| card.instance_variable_get(:@suit) == :spades }).to eq(104)
-      expect(new_shoe.count { |card| card.instance_variable_get(:@suit) == :clubs }).to eq(104)
+      expect(new_shoe.count { |card| card.suit == :hearts }).to eq(104)
+      expect(new_shoe.count { |card| card.suit == :diamonds }).to eq(104)
+      expect(new_shoe.count { |card| card.suit == :spades }).to eq(104)
+      expect(new_shoe.count { |card| card.suit == :clubs }).to eq(104)
     end
     it 'is shuffled' do
       10.times do
@@ -24,7 +24,7 @@ describe Shoe do
   end
 
   describe '#initialize' do
-    let(:cards) { shoe.instance_variable_get(:@cards) }
+    let(:cards) { shoe.cards }
     it 'has an array of cards' do
       expect(cards).to be_an(Array)
     end
@@ -36,7 +36,7 @@ describe Shoe do
   describe '#draw_card' do
     it 'removes a card from the shoe' do
       card = shoe.draw_card
-      expect(shoe.instance_variable_get(:@cards).length).to eq(415)
+      expect(shoe.cards.length).to eq(415)
     end
     it 'returns the drawn card' do
       card = shoe.draw_card

@@ -1,6 +1,8 @@
 require_relative 'card'
 
 class Shoe
+  attr_reader :cards
+
   def self.create_shoe
     shoe = []
 
@@ -22,10 +24,10 @@ class Shoe
   end
 
   def draw_card
-    @cards.shift
+    cards.shift
   end
 
   def count
-    @cards.length
+    cards.length
   end
 end

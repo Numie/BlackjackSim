@@ -9,7 +9,7 @@ describe Player do
 
   describe '#initialize' do
     it 'sets the dealer' do
-      expect(player.instance_variable_get(:@dealer)).to eq(dealer)
+      expect(player.dealer).to eq(dealer)
     end
     it 'initializes the bankroll to 0' do
       expect(player.bankroll).to eq(0)
@@ -59,7 +59,7 @@ describe Player do
 
   describe '#hit' do
     before(:each) do
-      player.instance_variable_set(:@current_hand, hand)
+      player.current_hand = hand
       allow(hand).to receive(:hit)
       allow(hand).to receive(:busted?).and_return(false)
       allow(hand).to receive(:doubled?).and_return(false)
@@ -83,7 +83,7 @@ describe Player do
 
   describe '#double_down' do
     before(:each) do
-      player.instance_variable_set(:@current_hand, hand)
+      player.current_hand = hand
       allow(hand).to receive(:bet).and_return(50)
       allow(hand).to receive(:double_down)
       allow(hand).to receive(:busted?).and_return(false)
@@ -110,8 +110,8 @@ describe Player do
     let(:hand2) { double('hand') }
     before(:each) do
       player.instance_variable_set(:@hands, [first_hand, hand, last_hand])
-      player.instance_variable_set(:@current_hand_index, 1)
-      player.instance_variable_set(:@current_hand, hand)
+      player.current_hand_index = 1
+      player.current_hand = hand
       allow(hand).to receive(:split).and_return([hand1, hand2])
       allow(hand1).to receive(:hit)
       allow(hand1).to receive(:busted?)
@@ -119,7 +119,7 @@ describe Player do
     end
     it 'splits the current hand' do
       player.split(shoe)
-      expect(player.instance_variable_get(:@hands)).to eq([first_hand, hand1, hand2, last_hand])
+      expect(player.hands).to eq([first_hand, hand1, hand2, last_hand])
     end
     it 'hits the first split hand' do
       expect(hand1).to receive(:hit)
@@ -134,7 +134,7 @@ describe Player do
 
     context 'when a hand is busted' do
       before(:each) do
-        player.instance_variable_set(:@current_hand, hand)
+        player.current_hand = hand
         allow(hand).to receive(:busted?).and_return(true)
         allow(hand).to receive(:bet).and_return(0)
         allow(dealer).to receive(:bankroll).and_return(0)
@@ -148,7 +148,7 @@ describe Player do
 
     context 'when a hand is doubled' do
       before do
-        player.instance_variable_set(:@current_hand, hand)
+        player.current_hand = hand
         allow(hand).to receive(:busted?).and_return(false)
         allow(hand).to receive(:doubled?).and_return(true)
       end
@@ -160,7 +160,7 @@ describe Player do
 
     context 'when a hand is neither busted nor doubled' do
       before do
-        player.instance_variable_set(:@current_hand, hand)
+        player.current_hand = hand
         allow(hand).to receive(:busted?).and_return(false)
         allow(hand).to receive(:doubled?).and_return(false)
       end
@@ -177,14 +177,14 @@ describe Player do
     end
     it 'moves to the next hand' do
       player.instance_variable_set(:@hands, [hand, next_hand])
-      player.instance_variable_set(:@current_hand_index, 0)
+      player.current_hand_index = 0
       allow(next_hand).to receive(:cards).and_return([card1, card2])
       player.send(:next_hand, shoe)
       expect(player.current_hand).to eq(next_hand)
     end
     it 'deals a card if a hand was split' do
       player.instance_variable_set(:@hands, [hand, next_hand])
-      player.instance_variable_set(:@current_hand_index, 0)
+      player.current_hand_index = 0
       allow(next_hand).to receive(:cards).and_return([card1])
       allow(next_hand).to receive(:blackjack?).and_return(false)
       expect(next_hand).to receive(:receive_card)
