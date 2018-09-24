@@ -1,14 +1,18 @@
+require_relative 'dealer'
+require_relative 'player'
+require_relative 'shoe'
+
 class Game
   attr_reader :dealer, :player, :shoe
 
   def initialize
     @dealer = Dealer.new
-    @player = Player.new
+    @player = Player.new(@dealer)
     @shoe = Shoe.new
   end
 
   def all_hands
-    plaer.hands.concat(dealer.hand)
+    [player.hands, dealer.hand].flatten
   end
 
   def deal_hand
