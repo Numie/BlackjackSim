@@ -43,14 +43,14 @@ class Hand
     doubled == true
   end
 
-  private
-
   def receive_card(shoe)
     card = shoe.draw_card
     cards << card
     add_card_to_value(self, card)
     card
   end
+
+  private
 
   def set_up_split(hand, card)
     hand.cards << card

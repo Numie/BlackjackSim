@@ -62,7 +62,7 @@ class Player
     # perform basic strategy action
 
     if current_hand.cards.length == 1
-      current_hand.send(:receive_card, shoe)
+      current_hand.receive_card(shoe)
       next_hand if current_hand.blackjack?
     end
   end

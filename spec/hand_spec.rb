@@ -130,19 +130,16 @@ describe Hand do
       allow(shoe).to receive(:draw_card).and_return(card)
       allow(card).to receive(:rank).and_return(:ace)
     end
-    it 'is private' do
-      expect{ hand.receive_card(shoe) }.to raise_error
-    end
     it 'adds the card to a Hand\'s cards' do
-      hand.send(:receive_card, shoe)
+      hand.receive_card(shoe)
       expect(hand.cards).to include(card)
     end
     it 'adds the card\'s value to a Hand\'s value' do
       expect(hand).to receive(:add_card_to_value)
-      hand.send(:receive_card, shoe)
+      hand.receive_card(shoe)
     end
     it 'returns the received card' do
-      expect(hand.send(:receive_card, shoe)).to eq(card)
+      expect(hand.receive_card(shoe)).to eq(card)
     end
   end
 
