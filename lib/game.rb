@@ -3,7 +3,8 @@ require_relative 'player'
 require_relative 'shoe'
 
 class Game
-  attr_reader :dealer, :player, :shoe
+  attr_reader :dealer, :player
+  attr_accessor :shoe
 
   def initialize
     @dealer = Dealer.new
@@ -19,5 +20,13 @@ class Game
     2.times do
       all_hands.each { |hand| hand.receive_card(shoe) }
     end
+  end
+
+  def end_of_shoe?
+    shoe.count < 104
+  end
+
+  def shuffle
+    self.shoe = Shoe.new
   end
 end

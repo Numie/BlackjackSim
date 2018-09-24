@@ -36,4 +36,34 @@ describe Game do
       end
     end
   end
+
+  describe '#end_of_shoe?' do
+    context 'when there are 104 cards remaining' do
+      it 'returns false' do
+        allow(shoe).to receive(:count).and_return(104)
+        expect(game.end_of_shoe?).to eq(false)
+      end
+    end
+    context 'when there are more than 104 cards remaining' do
+      it 'returns false' do
+        allow(shoe).to receive(:count).and_return(105)
+        expect(game.end_of_shoe?).to eq(false)
+      end
+    end
+    context 'when there are fewer than 104 cards remaining' do
+      it 'returns false' do
+        allow(shoe).to receive(:count).and_return(103)
+        expect(game.end_of_shoe?).to eq(true)
+      end
+    end
+  end
+
+  describe '#shuffle' do
+    it 'creates a new shoe' do
+      beginning_shoe = shoe
+      game.shuffle
+      ending_shoe = game.shoe
+      expect(beginning_shoe).to_not eq(ending_shoe)
+    end
+  end
 end
