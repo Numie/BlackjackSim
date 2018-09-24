@@ -1,6 +1,6 @@
 class Hand
-  attr_reader :cards, :doubled
-  attr_accessor :value, :bet
+  attr_reader :cards
+  attr_accessor :value, :doubled, :bet, :ace_as_11, :hard
 
   def initialize
     @cards = []
@@ -13,7 +13,7 @@ class Hand
   end
 
   def double_down(shoe)
-    @doubled = true
+    self.doubled = true
     self.bet *= 2
     receive_card(shoe)
   end
@@ -25,15 +25,10 @@ class Hand
     card1 = cards[0]
     card2 = cards[1]
 
-    hand1.cards << card1
-    hand1.send(:add_card_to_value, card1)
-    hand1.bet = bet
+    set_up_split(hand1, card1)
+    set_up_split(hand2, card2)
 
-    hand2.cards << card2
-    hand2.send(:add_card_to_value, card2)
-    hand2.bet = bet
-
-    return [hand1, hand2]
+    [hand1, hand2]
   end
 
   def blackjack?
@@ -53,25 +48,31 @@ class Hand
   def receive_card(shoe)
     card = shoe.draw_card
     cards << card
-    add_card_to_value(card)
+    add_card_to_value(self, card)
     card
   end
 
-  def add_card_to_value(card)
+  def set_up_split(hand, card)
+    hand.cards << card
+    add_card_to_value(hand, card)
+    hand.bet = bet
+  end
+
+  def add_card_to_value(hand, card)
     if card.rank == :ace
-      if value >= 11
-        self.value += 1
+      if hand.value >= 11
+        hand.value += 1
       else
-        @ace_as_11 = true
-        self.value += 11
+        hand.ace_as_11 = true
+        hand.value += 11
       end
     else
-      self.value += card.value
+      hand.value += card.value
     end
 
-    if value > 21 && (@ace_as_11 && !@hard)
-      @hard = true
-      self.value -= 10
+    if hand.value > 21 && (hand.ace_as_11 && !hand.hard)
+      hand.hard = true
+      hand.value -= 10
     end
   end
 end

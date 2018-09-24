@@ -68,6 +68,6 @@ class Player
   end
 
   def end_turn
-
+    # perform end turn actions
   end
 end

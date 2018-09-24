@@ -148,14 +148,14 @@ describe Hand do
 
   describe '#add_card_to_value' do
     it 'is private' do
-      expect{ hand.add_card_to_value(card) }.to raise_error
+      expect{ hand.add_card_to_value(hand, card) }.to raise_error
     end
     context 'when a card is an Ace' do
       before(:each) { allow(card).to receive(:rank).and_return(:ace) }
       context 'when a Hand has a value greater than or equal to 11' do
         it 'adds 1 to the value' do
           hand.value = 11
-          hand.send(:add_card_to_value, card)
+          hand.send(:add_card_to_value, hand, card)
           expect(hand.value).to eq(12)
         end
       end
@@ -163,13 +163,13 @@ describe Hand do
       context 'when a Hand has a value less than 11' do
         before(:each) do
           hand.value = 10
-          hand.send(:add_card_to_value, card)
+          hand.send(:add_card_to_value, hand, card)
         end
         it 'adds 11 to the value' do
           expect(hand.value).to eq(21)
         end
         it 'registers an Ace being used as 11' do
-          expect(hand.instance_variable_get(:@ace_as_11)).to eq(true)
+          expect(hand.ace_as_11).to eq(true)
         end
       end
     end
@@ -181,41 +181,41 @@ describe Hand do
       end
       it 'adds the card\'s value to the value' do
         hand.value = 10
-        hand.send(:add_card_to_value, card)
+        hand.send(:add_card_to_value, hand, card)
         expect(hand.value).to eq(20)
       end
     end
 
     context 'when a Hand is soft' do
       before(:each) do
-        hand.instance_variable_set(:@ace_as_11, true)
-        hand.instance_variable_set(:@hard, false)
+        hand.ace_as_11 = true
+        hand.hard = false
         allow(card).to receive(:rank).and_return(:eight)
         allow(card).to receive(:value).and_return(8)
       end
       context 'when a Hand would bust' do
         before(:each) do
           hand.value = 20
-          hand.send(:add_card_to_value, card)
+          hand.send(:add_card_to_value, hand, card)
         end
         it 'deducts 10 from the value' do
           expect(hand.value).to eq(18)
         end
         it 'registers the Hand as hard' do
-          expect(hand.instance_variable_get(:@hard)).to eq(true)
+          expect(hand.hard).to eq(true)
         end
       end
 
       context 'when a Hand would not bust' do
         before(:each) do
           hand.value = 6
-          hand.send(:add_card_to_value, card)
+          hand.send(:add_card_to_value, hand, card)
         end
         it 'adds the card\'s value as normal' do
           expect(hand.value).to eq(14)
         end
         it 'does not register the Hand as hard' do
-          expect(hand.instance_variable_get(:@hard)).to eq(false)
+          expect(hand.hard).to eq(false)
         end
       end
     end

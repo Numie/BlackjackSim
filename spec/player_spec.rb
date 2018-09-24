@@ -164,7 +164,10 @@ describe Player do
         allow(hand).to receive(:busted?).and_return(false)
         allow(hand).to receive(:doubled?).and_return(false)
       end
-      it 'continues with the current hand'
+      it 'continues with the current hand' do
+        expect(player).to_not receive(:next_hand)
+        player.send(:check_hand_status, shoe)
+      end
     end
   end
 
