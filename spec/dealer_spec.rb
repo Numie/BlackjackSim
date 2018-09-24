@@ -1,4 +1,5 @@
 require 'rspec'
+require 'card'
 require 'dealer'
 
 describe Dealer do
@@ -9,6 +10,18 @@ describe Dealer do
   describe '#initialize' do
     it 'has a hand' do
       expect(dealer.hand).to be_a(Hand)
+    end
+  end
+
+  describe '#upcard' do
+    let(:card1) { Card.new(:ace, :hearts) }
+    let(:card2) { Card.new(:ace, :spades) }
+    before(:each) do
+      allow(dealer).to receive(:hand).and_return(hand)
+      allow(hand).to receive(:cards).and_return([card1, card2])
+    end
+    it 'returns the first card in a dealer\'s hand' do
+      expect(dealer.upcard).to eq(card1)
     end
   end
 
