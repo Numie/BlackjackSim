@@ -1,4 +1,6 @@
 module BasicStrategy
+  module_function
+
   def action(hand, upcard)
     if pair?
       action_with_pair(hand, upcard)
@@ -7,28 +9,29 @@ module BasicStrategy
 
   def pair?(hand)
     return false unless hand.cards.length == 2
-    hand.cards.first.rank == hands.cards.last.rank
+    hand.cards.first.rank == hand.cards.last.rank
   end
 
-  def pair_rank
+  def pair_rank(hand)
     raise 'Not a pair!' unless pair?(hand)
     hand.cards.first.rank
   end
 
   def action_with_pair(hand, upcard)
-    if pair_rank == :two || pair_rank == :three
+    case pair_rank(hand)
+    when :two, :three
       upcard.value <= 7 ? :split : :hit
-    elsif pair_rank == :four
+    when :four
       upcard.value == 5 || upcard.value == 6 ? :split : :hit
-    elsif pair_rank == :five
-      upcard.value < 10 ? :double : :stay
-    elsif pair_rank == :six
-      upcard.value <= 6 ? :split : :stay
-    elsif pair_rank == :seven
-      upcard.value <= 7 ? :split : :stay
-    elsif pair_rank == :nine
+    when :five
+      upcard.value < 10 ? :double : :hit
+    when :six
+      upcard.value <= 6 ? :split : :hit
+    when :seven
+      upcard.value <= 7 ? :split : :hit
+    when :nine
       upcard.value <= 9 && upcard.value != 7 ? :split : :stay
-    elsif pair_rank == :eight || pair_rank == :ace
+    when :eight, :ace
       :split
     else
       :stay
