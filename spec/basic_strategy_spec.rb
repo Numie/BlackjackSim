@@ -13,6 +13,22 @@ describe BasicStrategy do
         BasicStrategy.action(hand, upcard)
       end
     end
+    context 'when a hand is soft' do
+      it 'finds the correct basic strategy' do
+        allow(BasicStrategy).to receive(:pair?).and_return(false)
+        allow(BasicStrategy).to receive(:soft?).and_return(true)
+        expect(BasicStrategy).to receive(:action_with_soft_hand)
+        BasicStrategy.action(hand, upcard)
+      end
+    end
+    context 'when a hand is hard' do
+      it 'finds the correct basic strategy' do
+        allow(BasicStrategy).to receive(:pair?).and_return(false)
+        allow(BasicStrategy).to receive(:soft?).and_return(false)
+        expect(BasicStrategy).to receive(:action_with_hard_hand)
+        BasicStrategy.action(hand, upcard)
+      end
+    end
   end
 
   describe '::pair?' do
