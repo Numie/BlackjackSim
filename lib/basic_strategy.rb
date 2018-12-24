@@ -4,7 +4,7 @@ module BasicStrategy
   def action(hand, upcard)
     if pair?(hand)
       action_with_pair(hand, upcard)
-    elsif soft?
+    elsif soft?(hand)
       action_with_soft_hand(hand, upcard)
     else
       action_with_hard_hand(hand, upcard)
@@ -18,11 +18,6 @@ module BasicStrategy
 
   def soft?(hand)
     !hand.hard && hand.cards.any? { |card| card.rank == :ace }
-  end
-
-  def pair_rank(hand)
-    raise 'Not a pair!' unless pair?(hand)
-    hand.cards.first.rank
   end
 
   def action_with_pair(hand, upcard)
@@ -44,6 +39,11 @@ module BasicStrategy
     else
       :stay
     end
+  end
+
+  def pair_rank(hand)
+    raise 'Not a pair!' unless pair?(hand)
+    hand.cards.first.rank
   end
 
   def action_with_soft_hand(hand, upcard)
@@ -86,7 +86,7 @@ module BasicStrategy
     elsif upcard.value < 7
       :double
     else
-      :stay
+      :hit
     end
   end
 end
