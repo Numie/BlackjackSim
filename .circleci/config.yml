@@ -16,9 +16,7 @@ jobs:
           key: rails-demo-bundle-v2-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-      - run:
-        -name: Run Tests
-        -command: |
+      - run: |
           bundle exec rspec --profile 10 \
                             --format RspecJunitFormatter \
                             --out test_results/rspec.xml \
