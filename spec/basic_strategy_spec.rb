@@ -536,5 +536,36 @@ describe BasicStrategy do
         end
       end
     end
+
+    context 'when the value is 10' do
+      before(:each) do
+        allow(hand).to receive(:value).and_return(10)
+      end
+      context 'when the upcard is not an ace or face' do
+        it 'double' do
+          allow(upcard).to receive(:value).and_return(9)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:double)
+
+          allow(upcard).to receive(:value).and_return(2)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:double)
+        end
+      end
+      context 'when the upcard is a 10' do
+        it 'hit' do
+          allow(upcard).to receive(:value).and_return(20)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:hit)
+        end
+      end
+      context 'when the upcard is an ace' do
+        it 'hit' do
+          allow(upcard).to receive(:value).and_return(11)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:hit)
+        end
+      end
+    end
   end
 end
