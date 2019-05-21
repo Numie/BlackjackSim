@@ -482,7 +482,7 @@ describe BasicStrategy do
       end
     end
 
-    context 'when the value is 19' do
+    context 'when the value is 19 or higher' do
       before(:each) do
         allow(hand).to receive(:value).and_return(19)
       end
@@ -490,6 +490,50 @@ describe BasicStrategy do
         allow(upcard).to receive(:value).and_return(rand(2..11))
         action = BasicStrategy.action_with_soft_hand(hand, upcard)
         expect(action).to eq(:stay)
+      end
+    end
+  end
+
+  describe '::action with hard hand' do
+    context 'when the value is 8 or lower' do
+      before(:each) do
+        allow(hand).to receive(:value).and_return(rand(5..8))
+      end
+      it 'hit' do
+        allow(upcard).to receive(:value).and_return(rand(2..11))
+        action = BasicStrategy.action_with_hard_hand(hand, upcard)
+        expect(action).to eq(:hit)
+      end
+    end
+
+    context 'when the value is 9' do
+      before(:each) do
+        allow(hand).to receive(:value).and_return(9)
+      end
+      context 'when the upcard is between 3 and 6' do
+        it 'double' do
+          allow(upcard).to receive(:value).and_return(3)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:double)
+
+          allow(upcard).to receive(:value).and_return(6)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:double)
+        end
+      end
+      context 'when the upcard is less than 3' do
+        it 'hit' do
+          allow(upcard).to receive(:value).and_return(2)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:hit)
+        end
+      end
+      context 'when the upcard is greater than 6' do
+        it 'hit' do
+          allow(upcard).to receive(:value).and_return(7)
+          action = BasicStrategy.action_with_hard_hand(hand, upcard)
+          expect(action).to eq(:hit)
+        end
       end
     end
   end
